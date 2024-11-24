@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, CssBaseline, AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton } from '@mui/material';
-import { Menu as MenuIcon, People, Assignment, Security } from '@mui/icons-material';
+import { Menu as MenuIcon, People as PeopleIcon, Security as SecurityIcon, Lock as LockIcon } from '@mui/icons-material';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
@@ -10,9 +10,9 @@ const Layout = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { text: 'Users', icon: <People />, path: '/users' },
-    { text: 'Roles', icon: <Assignment />, path: '/roles' },
-    { text: 'Permissions', icon: <Security />, path: '/permissions' },
+    { text: 'Users', icon: <PeopleIcon />, path: '/users' },
+    { text: 'Roles', icon: <SecurityIcon />, path: '/roles' },
+    { text: 'Permissions', icon: <LockIcon />, path: '/permissions' },
   ];
 
   const handleDrawerToggle = () => {
