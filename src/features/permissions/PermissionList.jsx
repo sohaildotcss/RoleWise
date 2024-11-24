@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -33,6 +33,7 @@ const PermissionList = () => {
       setRoles(response.data);
       setError(null);
     } catch (err) {
+      console.error('Error loading users:', err);
       setError('Failed to load permissions. Please try again.');
     } finally {
       setLoading(false);
@@ -58,6 +59,7 @@ const PermissionList = () => {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
+      console.error('Error loading users:', err);
       setError('Failed to update permission. Please try again.');
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -53,6 +53,7 @@ const UserList = () => {
       setUsers(response.data);
       setError(null);
     } catch (err) {
+      console.error('Error loading users:', err);
       setError('Failed to load users. Please try again.');
     } finally {
       setLoading(false);
@@ -73,6 +74,7 @@ const UserList = () => {
       await loadUsers();
       setError(null);
     } catch (err) {
+      console.error('Error loading users:', err);
       setError('Failed to delete user. Please try again.');
     } finally {
       setLoading(false);
@@ -92,6 +94,7 @@ const UserList = () => {
       setSelectedUser(null);
       setError(null);
     } catch (err) {
+      console.error('Error loading users:', err);
       setError('Failed to save user. Please try again.');
     } finally {
       setLoading(false);
