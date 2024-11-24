@@ -11,6 +11,7 @@ import {
   Checkbox,
 } from '@mui/material';
 import { useFormik } from 'formik';
+import PropTypes from 'prop-types'; // Import PropTypes
 import * as yup from 'yup';
 
 const validationSchema = yup.object({
@@ -100,6 +101,13 @@ const RoleForm = ({ open, onClose, onSave, role }) => {
       </form>
     </Dialog>
   );
+};
+
+RoleForm.propTypes = { // Add prop type validation
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
+  role: PropTypes.object,
 };
 
 export default RoleForm;
