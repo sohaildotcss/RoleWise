@@ -4,30 +4,24 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // Initial mock data
 const mockUsers = [
   {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@example.com',
+    id: 1,
+    name: 'Sohail',
+    email: 'sohail@example.com',
     role: 'Admin',
     status: 'Active',
   },
   {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@example.com',
+    id: 2,
+    name: 'Sam',
+    email: 'sam@example.com',
     role: 'Editor',
     status: 'Active',
-  },
-  {
-    id: '3',
-    name: 'Bob Wilson',
-    email: 'bob@example.com',
-    role: 'Viewer',
-    status: 'Inactive',
   },
 ];
 
 const mockRoles = [
   {
+    id: 1,
     name: 'Admin',
     description: 'Full system access',
     permissions: {
@@ -37,8 +31,9 @@ const mockRoles = [
     },
   },
   {
+    id: 2,
     name: 'Editor',
-    description: 'Can manage content and view users',
+    description: 'Content management',
     permissions: {
       users: ['read'],
       roles: ['read'],
@@ -46,6 +41,7 @@ const mockRoles = [
     },
   },
   {
+    id: 3,
     name: 'Viewer',
     description: 'Read-only access',
     permissions: {
@@ -56,15 +52,25 @@ const mockRoles = [
   },
 ];
 
+// Helper function to simulate API errors
+const simulateError = () => {
+  const shouldError = Math.random() < 0.1; // 10% chance of error
+  if (shouldError) {
+    throw new Error('API Error: Something went wrong');
+  }
+};
+
 // User API
 export const userApi = {
   getUsers: async () => {
     await delay(500);
+    simulateError();
     return { data: mockUsers };
   },
 
-  getUserById: async (id) => {
+  getUser: async (id) => {
     await delay(300);
+    simulateError();
     const user = mockUsers.find(u => u.id === id);
     if (!user) throw new Error('User not found');
     return { data: user };
@@ -72,9 +78,10 @@ export const userApi = {
 
   createUser: async (userData) => {
     await delay(700);
+    simulateError();
     const newUser = {
-      id: String(mockUsers.length + 1),
       ...userData,
+      id: Math.max(...mockUsers.map(u => u.id)) + 1,
     };
     mockUsers.push(newUser);
     return { data: newUser };
@@ -82,6 +89,7 @@ export const userApi = {
 
   updateUser: async (id, userData) => {
     await delay(500);
+    simulateError();
     const index = mockUsers.findIndex(u => u.id === id);
     if (index === -1) throw new Error('User not found');
     mockUsers[index] = { ...mockUsers[index], ...userData };
@@ -90,10 +98,11 @@ export const userApi = {
 
   deleteUser: async (id) => {
     await delay(600);
+    simulateError();
     const index = mockUsers.findIndex(u => u.id === id);
     if (index === -1) throw new Error('User not found');
     mockUsers.splice(index, 1);
-    return { success: true };
+    return { data: { success: true } };
   },
 };
 
@@ -101,87 +110,54 @@ export const userApi = {
 export const roleApi = {
   getRoles: async () => {
     await delay(500);
+    simulateError();
     return { data: mockRoles };
   },
 
-  getRoleByName: async (name) => {
+  getRole: async (id) => {
     await delay(300);
-    const role = mockRoles.find(r => r.name === name);
+    simulateError();
+    const role = mockRoles.find(r => r.id === id);
     if (!role) throw new Error('Role not found');
     return { data: role };
   },
 
   createRole: async (roleData) => {
     await delay(700);
-    if (mockRoles.some(r => r.name === roleData.name)) {
-      throw new Error('Role already exists');
-    }
+    simulateError();
     const newRole = {
       ...roleData,
-      permissions: roleData.permissions || {},
+      id: Math.max(...mockRoles.map(r => r.id)) + 1,
     };
     mockRoles.push(newRole);
     return { data: newRole };
   },
 
-  updateRole: async (name, roleData) => {
+  updateRole: async (id, roleData) => {
     await delay(500);
-    const index = mockRoles.findIndex(r => r.name === name);
+    simulateError();
+    const index = mockRoles.findIndex(r => r.id === id);
     if (index === -1) throw new Error('Role not found');
     mockRoles[index] = { ...mockRoles[index], ...roleData };
     return { data: mockRoles[index] };
   },
 
-  deleteRole: async (name) => {
+  deleteRole: async (id) => {
     await delay(600);
-    const index = mockRoles.findIndex(r => r.name === name);
+    simulateError();
+    const index = mockRoles.findIndex(r => r.id === id);
     if (index === -1) throw new Error('Role not found');
-    // Check if any users are using this role
-    if (mockUsers.some(u => u.role === name)) {
-      throw new Error('Cannot delete role: Role is assigned to users');
-    }
     mockRoles.splice(index, 1);
-    return { success: true };
+    return { data: { success: true } };
   },
 
-  // Permission-specific operations
-  updatePermissions: async (roleName, permissions) => {
+  // Special endpoint for updating role permissions
+  updateRolePermissions: async (id, permissions) => {
     await delay(400);
-    const role = mockRoles.find(r => r.name === roleName);
-    if (!role) throw new Error('Role not found');
-    role.permissions = permissions;
-    return { data: role };
-  },
-
-  checkPermission: async (roleName, category, action) => {
-    await delay(200);
-    const role = mockRoles.find(r => r.name === roleName);
-    if (!role) throw new Error('Role not found');
-    return {
-      data: {
-        hasPermission: role.permissions[category]?.includes(action) || false,
-      },
-    };
+    simulateError();
+    const index = mockRoles.findIndex(r => r.id === id);
+    if (index === -1) throw new Error('Role not found');
+    mockRoles[index].permissions = permissions;
+    return { data: mockRoles[index] };
   },
 };
-
-// Error simulation (uncomment to test error handling)
-const errorRate = 0; // 0.2 = 20% error rate
-const simulateError = () => Math.random() < errorRate;
-
-export const addErrorSimulation = (api) => {
-  return Object.keys(api).reduce((acc, key) => {
-    const originalFn = api[key];
-    acc[key] = async (...args) => {
-      if (simulateError()) {
-        throw new Error('Simulated API error');
-      }
-      return originalFn(...args);
-    };
-    return acc;
-  }, {});
-};
-
-// Uncomment to enable error simulation
-// export const userApi = addErrorSimulation(userApiImplementation);
-// export const roleApi = addErrorSimulation(roleApiImplementation);
